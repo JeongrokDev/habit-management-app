@@ -85,7 +85,7 @@ public class DiaryActivity extends AppCompatActivity {
         displayDiarys();
     }
 
-    // 사용자로부터 일기 정보를 입력받기 위한 대화상자
+    // 일기 정보를 입력받기 위한 대화상자
     private void showAddDiaryDialog() {
         View dialogView = (View) View.inflate(DiaryActivity.this, R.layout.dialog_diary, null);
         AlertDialog.Builder dlg = new AlertDialog.Builder(DiaryActivity.this);

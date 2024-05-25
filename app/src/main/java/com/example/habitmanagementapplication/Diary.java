@@ -1,18 +1,21 @@
 package com.example.habitmanagementapplication;
 
 public class Diary {
-    private String createdDate; // 작성 시각
-    private String diaryContent; // 일기 내용
-    private String feedbackContent; // 피드백 내용
-    private boolean feedbackReceived; // 피드백 받았는지 여부
+    private int id; // 일기 객체의 고유한 식별자
+    private String createdDate; // 일기가 작성된 날짜
+    private String diaryContent; // 일기의 내용
+    private String feedbackContent; // 일기에 대한 피드백 내용
+    private boolean feedbackReceived; // 일기에 대한 피드백 여부
 
     public Diary(String createdDate, String diaryContent, String feedbackContent, boolean feedbackReceived) {
+        this.id = id;
         this.createdDate = createdDate;
         this.diaryContent = diaryContent;
         this.feedbackContent = feedbackContent;
         this.feedbackReceived = feedbackReceived;
     }
 
+    public int getId() { return id; }
     public String getCreatedDate() { return createdDate; }
     public String getDiaryContent() { return diaryContent; }
     public String getFeedbackContent() { return feedbackContent; }

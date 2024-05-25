@@ -19,7 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         displayHabits();
     }
 
-    // 사용자로부터 목표 습관 정보를 입력받기 위한 대화상자
+    // 목표 습관 정보를 입력받기 위한 대화상자
     private void showAddHabitDialog() {
         View dialogView = (View) View.inflate(MainActivity.this, R.layout.dialog_habit, null);
         AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
             boolean[] dailyAchievements = new boolean[7];
 
-            Habit habit = new Habit(title, hour, minute, dailyGoals, dailyAchievements); // 목표 습관 객체 생성
+            Habit habit = new Habit(0, title, hour, minute, dailyGoals, dailyAchievements); // 목표 습관 객체 생성
 
             // 생성한 목표 습관 객체를 데이터베이스에 저장
             dbHelper.insertHabit(habit);
@@ -143,8 +147,14 @@ public class MainActivity extends AppCompatActivity {
 
         // 각 습관 객체를 카드뷰로 만들어서 레이아웃에 추가
         for (Habit habit : habitList) {
-            View habitCardView = createHabitCardView(habit);
-            habitLayout.addView(habitCardView);
+            
+            // 현재 요일에 
+            // 설정한 수행 요일의 배열은 길이 7인 boolean 타입 배열
+            // 0(월)부터 시작하여 6(일)까지 있으며 값이 true인 요일이 설정한 수행 요일
+            if (habit.getDailyGoals()[getCurrentDayOfWeek()]) {
+                View habitCardView = createHabitCardView(habit);
+                habitLayout.addView(habitCardView);
+            }
         }
     }
 
@@ -161,6 +171,12 @@ public class MainActivity extends AppCompatActivity {
         cardView.setLayoutParams(layoutParams);
 
         // 카드 뷰 안에 들어갈 뷰를 생성
+        
+        // id 정보를 표시하는 TextView 생성
+        TextView idTextView = new TextView(this);
+        idTextView.setText("id: " + habit.getId());
+
+        // 제목 정보를 표시하는 TextView 생성
         TextView titleTextView = new TextView(this);
         titleTextView.setText("Title: " + habit.getTitle());
 
@@ -176,15 +192,61 @@ public class MainActivity extends AppCompatActivity {
         TextView achievementsTextView = new TextView(this);
         achievementsTextView.setText("Daily Achievements: " + Arrays.toString(habit.getDailyAchievements()));
 
+        // 달성 버튼 추가
+        Button achieveButton = new Button(this);
+        achieveButton.setText("달성");
+
+        // 현재 요일의 달성 여부를 확인
+        boolean[] achievements = habit.getDailyAchievements();
+        int currentDayOfWeek = getCurrentDayOfWeek();
+
+        // 만약 해당 요일에 이미 달성 여부가 true이면 버튼을 비활성화
+        if (achievements[currentDayOfWeek]) {
+            achieveButton.setEnabled(false);
+        } else {
+            achieveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 현재 요일에 해당하는 달성 여부를 true로 변경
+                    achievements[currentDayOfWeek] = true;
+                    habit.setDailyAchievements(achievements);
+
+                    // 데이터베이스에서 습관 정보 업데이트
+                    dbHelper.updateHabit(habit);
+                    displayHabits();
+                }
+            });
+        }
+
         // 생성한 뷰들을 카드 뷰에 추가
         LinearLayout cardContentLayout = new LinearLayout(this);
         cardContentLayout.setOrientation(LinearLayout.VERTICAL);
+        cardContentLayout.addView(idTextView);
         cardContentLayout.addView(titleTextView);
         cardContentLayout.addView(timeTextView);
         cardContentLayout.addView(goalsTextView); // dailyGoals 정보 추가
         cardContentLayout.addView(achievementsTextView); // dailyAchievements 정보 추가
+        cardContentLayout.addView(achieveButton); // 달성 버튼 추가
         cardView.addView(cardContentLayout);
 
         return cardView;
+    }
+
+    // 현재 요일 정보를 가져오는 메서드(0: 월요일, 1: 화요일, ..., 6: 일요일)
+    private int getCurrentDayOfWeek() {
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+
+        // Date 객체로부터 Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        // 현재 요일 가져오기
+        int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        // 월요일부터 시작하도록 인덱스 조정
+        currentDayOfWeek = (currentDayOfWeek + 5) % 7;
+
+        return currentDayOfWeek;
     }
 }

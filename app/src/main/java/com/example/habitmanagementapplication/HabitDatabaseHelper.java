@@ -60,6 +60,22 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         db.close(); // 데이터베이스 닫기
     }
 
+    // 목표 습관 데이터를 업데이트하는 메서드
+    public void updateHabit(Habit habit) {
+        SQLiteDatabase db = this.getWritableDatabase(); // 데이터베이스를 쓰기 모드로 열기
+        ContentValues values = new ContentValues(); // 값을 저장할 객체 생성
+
+        values.put(COLUMN_TITLE, habit.getTitle()); // 제목 갱신
+        values.put(COLUMN_HOUR, habit.getHour()); // 시간 갱신
+        values.put(COLUMN_MINUTE, habit.getMinute()); // 분 갱신
+        values.put(COLUMN_DAILY_GOALS, booleanArrayToString(habit.getDailyGoals())); // 수행 요일 갱신
+        values.put(COLUMN_DAILY_ACHIEVEMENTS, booleanArrayToString(habit.getDailyAchievements())); // 달성 정보 갱신
+
+        // 테이블에 있는 특정 행을 업데이트
+        db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(habit.getId())});
+        db.close(); // 데이터베이스 닫기
+    }
+
     // boolean 배열을 문자열로 변환하는 메서드
     private String booleanArrayToString(boolean[] array) {
         StringBuilder sb = new StringBuilder();
@@ -69,7 +85,7 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         return sb.toString(); // 결과 문자열 반환
     }
 
-    // 문자열을 boolean 배열로 변환하는 메소드
+    // 문자열을 boolean 배열로 변환하는 메서드
     private boolean[] stringToBooleanArray(String str) {
         boolean[] array = new boolean[str.length()];
         for (int i = 0; i < str.length(); i++) {
@@ -81,13 +97,14 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
     // 습관 데이터를 데이터베이스에서 불러오는 메서드
     public Habit getHabit(int id) {
         SQLiteDatabase db = this.getReadableDatabase(); // 데이터베이스를 읽기 모드로 열기
-        Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_TITLE, COLUMN_HOUR, COLUMN_MINUTE, COLUMN_DAILY_GOALS, COLUMN_DAILY_ACHIEVEMENTS},
+        Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_ID, COLUMN_TITLE, COLUMN_HOUR, COLUMN_MINUTE, COLUMN_DAILY_GOALS, COLUMN_DAILY_ACHIEVEMENTS},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
 
         // 커서를 첫 번째 레코드로 이동
         if (cursor != null) cursor.moveToFirst();
 
         // 커서에서 각 컬럼의 값을 추출하여 변수에 저장
+        int habitId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
         int hour = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_HOUR));
         int minute = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MINUTE));
@@ -96,7 +113,7 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         // 추출된 값을 사용하여 새로운 Habit 객체를 생성하여 반환
-        return new Habit(title, Integer.toString(hour), Integer.toString(minute), dailyGoals, dailyAchievements);
+        return new Habit(habitId, title, Integer.toString(hour), Integer.toString(minute), dailyGoals, dailyAchievements);
     }
 
     // 데이터베이스에 저장된 모든 습관 객체 정보를 리스트로 반환하는 메서드
@@ -110,6 +127,7 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         // 검색된 각 레코드를 Habit 객체로 변환하여 리스트에 추가
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
                 String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
                 int hour = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_HOUR));
                 int minute = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MINUTE));
@@ -117,7 +135,7 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
                 boolean[] dailyAchievements = stringToBooleanArray(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DAILY_ACHIEVEMENTS)));
 
                 // Habit 객체 생성 및 리스트에 추가
-                Habit habit = new Habit(title, Integer.toString(hour), Integer.toString(minute), dailyGoals, dailyAchievements);
+                Habit habit = new Habit(id, title, Integer.toString(hour), Integer.toString(minute), dailyGoals, dailyAchievements);
                 habitList.add(habit);
             } while (cursor.moveToNext());
         }
