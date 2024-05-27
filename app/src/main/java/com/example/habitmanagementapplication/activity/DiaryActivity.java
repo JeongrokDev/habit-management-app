@@ -162,6 +162,26 @@ public class DiaryActivity extends AppCompatActivity {
         TextView getFeedbackReceived = new TextView(this);
         getFeedbackReceived.setText("feedbackReceived: " + diary.getFeedbackReceived());
 
+        // 피드백 버튼 추가
+        Button feedbackButton = new Button(this);
+        feedbackButton.setText("피드백");
+
+        // 만약 해당 요일에 이미 달성 여부가 true이면 버튼을 비활성화
+        if (diary.getFeedbackReceived() == true) {
+            feedbackButton.setEnabled(false);
+        } else {
+            feedbackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    diary.setFeedbackReceived(true);
+                    diary.setFeedbackContent(diary.getDiaryContent() + ": temp feedback");
+                    // 데이터베이스에서 습관 정보 업데이트
+                    dbHelper.updateDiary(diary);
+                    displayDiarys();
+                }
+            });
+        }
+
         // 생성한 뷰들을 카드 뷰에 추가
         LinearLayout cardContentLayout = new LinearLayout(this);
         cardContentLayout.setOrientation(LinearLayout.VERTICAL);
@@ -170,6 +190,7 @@ public class DiaryActivity extends AppCompatActivity {
         cardContentLayout.addView(diaryContentTextView);
         cardContentLayout.addView(getFeedbackContentTextView);
         cardContentLayout.addView(getFeedbackReceived);
+        cardContentLayout.addView(feedbackButton); // 달성 버튼 추가
         cardView.addView(cardContentLayout);
 
         return cardView;

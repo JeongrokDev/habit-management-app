@@ -78,6 +78,14 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         db.close(); // 데이터베이스 닫기
     }
 
+    // 목표 습관 데이터를 삭제하는 메서드
+    public void deleteHabit(Habit habit) {
+        SQLiteDatabase db = this.getWritableDatabase(); // 데이터베이스를 쓰기 모드로 열기
+        // 특정 id를 가진 행을 삭제
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{String.valueOf(habit.getId())});
+        db.close(); // 데이터베이스 닫기
+    }
+
     // boolean 배열을 문자열로 변환하는 메서드
     private String booleanArrayToString(boolean[] array) {
         StringBuilder sb = new StringBuilder();

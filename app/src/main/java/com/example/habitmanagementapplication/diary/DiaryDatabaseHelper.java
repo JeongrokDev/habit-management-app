@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.habitmanagementapplication.diary.Diary;
+import com.example.habitmanagementapplication.habit.Habit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,21 @@ public class DiaryDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_FEEDBACK_RECEIVED, diary.getFeedbackReceived() ? 1 : 0); // 일기에 대한 피드백 여부 삽입
 
         db.insert(TABLE_NAME, null, values); // 테이블에 값 삽입
+        db.close(); // 데이터베이스 닫기
+    }
+
+    // 습관 일기 데이터를 업데이트하는 메서드
+    public void updateDiary(Diary diary) {
+        SQLiteDatabase db = this.getWritableDatabase(); // 데이터베이스를 쓰기 모드로 열기
+        ContentValues values = new ContentValues(); // 값을 저장할 객체 생성
+
+        values.put(COLUMN_DATE, diary.getCreatedDate()); // 일기의 작성 일자 갱신
+        values.put(COLUMN_CONTENT, diary.getDiaryContent()); // 일기의 내용 갱신
+        values.put(COLUMN_FEEDBACK_CONTENT, diary.getFeedbackContent()); // 일기에 대한 피드백 내용 갱신
+        values.put(COLUMN_FEEDBACK_RECEIVED, diary.getFeedbackReceived()); // 일기에 대한 피드백 여부 갱신
+
+        // 테이블에 있는 특정 행을 업데이트
+        db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(diary.getId())});
         db.close(); // 데이터베이스 닫기
     }
 
