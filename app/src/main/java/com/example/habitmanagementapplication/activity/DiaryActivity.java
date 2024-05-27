@@ -1,14 +1,12 @@
-package com.example.habitmanagementapplication;
+package com.example.habitmanagementapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,8 +14,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.example.habitmanagementapplication.R;
+import com.example.habitmanagementapplication.diary.Diary;
+import com.example.habitmanagementapplication.diary.DiaryDatabaseHelper;
+
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -101,7 +102,7 @@ public class DiaryActivity extends AppCompatActivity {
             String diaryContent = editDiaryContent.getText().toString();
             String feedbackContent = "";
 
-            Diary diary = new Diary(createdDate, diaryContent, feedbackContent, false); // 습관 일기 객체 생성
+            Diary diary = new Diary(0, createdDate, diaryContent, feedbackContent, false); // 습관 일기 객체 생성
 
             // 생성한 습관 일기 객체를 데이터베이스에 저장
             dbHelper.insertDiary(diary);
@@ -140,21 +141,31 @@ public class DiaryActivity extends AppCompatActivity {
         cardView.setLayoutParams(layoutParams);
 
         // 카드 뷰 안에 들어갈 뷰를 생성
+
+        // id 정보를 표시하는 TextView 생성
+        TextView idTextView = new TextView(this);
+        idTextView.setText("id: " + diary.getId());
+
+        // 일기 작성 날짜를 표시하는 TextView 생성
         TextView createdDateTextView = new TextView(this);
         createdDateTextView.setText("createdDate: " + diary.getCreatedDate());
 
+        // 일기 내용을 표시하는 TextView 생성
         TextView diaryContentTextView = new TextView(this);
         diaryContentTextView.setText("diaryContent: " + diary.getDiaryContent());
 
+        // 일기에 대한 피드백 내용을 표시하는 TextView 생성
         TextView getFeedbackContentTextView = new TextView(this);
         getFeedbackContentTextView.setText("feedbackContent: " + diary.getFeedbackContent());
 
+        // 일기에 대한 피드백 여부를 표시하는 TextView 생성
         TextView getFeedbackReceived = new TextView(this);
         getFeedbackReceived.setText("feedbackReceived: " + diary.getFeedbackReceived());
 
         // 생성한 뷰들을 카드 뷰에 추가
         LinearLayout cardContentLayout = new LinearLayout(this);
         cardContentLayout.setOrientation(LinearLayout.VERTICAL);
+        cardContentLayout.addView(idTextView);
         cardContentLayout.addView(createdDateTextView);
         cardContentLayout.addView(diaryContentTextView);
         cardContentLayout.addView(getFeedbackContentTextView);

@@ -1,4 +1,4 @@
-package com.example.habitmanagementapplication;
+package com.example.habitmanagementapplication.diary;
 
 public class Diary {
     private int id; // 일기 객체의 고유한 식별자
@@ -7,7 +7,7 @@ public class Diary {
     private String feedbackContent; // 일기에 대한 피드백 내용
     private boolean feedbackReceived; // 일기에 대한 피드백 여부
 
-    public Diary(String createdDate, String diaryContent, String feedbackContent, boolean feedbackReceived) {
+    public Diary(int id, String createdDate, String diaryContent, String feedbackContent, boolean feedbackReceived) {
         this.id = id;
         this.createdDate = createdDate;
         this.diaryContent = diaryContent;

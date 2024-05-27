@@ -1,4 +1,4 @@
-package com.example.habitmanagementapplication;
+package com.example.habitmanagementapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.example.habitmanagementapplication.R;
+import com.example.habitmanagementapplication.activity.DiaryActivity;
+import com.example.habitmanagementapplication.habit.Habit;
+import com.example.habitmanagementapplication.habit.HabitDatabaseHelper;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,10 +1,12 @@
-package com.example.habitmanagementapplication;
+package com.example.habitmanagementapplication.diary;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.habitmanagementapplication.diary.Diary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,15 +65,18 @@ public class DiaryDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_DATE, COLUMN_CONTENT, COLUMN_FEEDBACK_CONTENT, COLUMN_FEEDBACK_RECEIVED},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
 
+        // 커서를 첫 번째 레코드로 이동
         if (cursor != null) cursor.moveToFirst();
 
+        // 커서에서 각 컬럼의 값을 추출하여 변수에 저장
+        int diaryId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
         String createdDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
         String diaryContent = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONTENT));
         String feedbackContent = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FEEDBACK_CONTENT));
         boolean feedbackReceived = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FEEDBACK_RECEIVED)) == 1;
         cursor.close();
 
-        return new Diary(createdDate, diaryContent, feedbackContent, feedbackReceived);
+        return new Diary(diaryId, createdDate, diaryContent, feedbackContent, feedbackReceived);
     }
 
     // 데이터베이스에 저장된 모든 습관 객체 정보를 리스트로 반환하는 메서드
@@ -92,7 +97,7 @@ public class DiaryDatabaseHelper extends SQLiteOpenHelper {
                 boolean feedbackReceived = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FEEDBACK_RECEIVED)) == 1;
 
                 // Diary 객체 생성 및 리스트에 추가
-                Diary diary = new Diary(createdDate, diaryContent, feedbackContent, feedbackReceived);
+                Diary diary = new Diary(id, createdDate, diaryContent, feedbackContent, feedbackReceived);
                 diaryList.add(diary);
             } while (cursor.moveToNext());
         }

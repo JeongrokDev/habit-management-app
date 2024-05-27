@@ -1,4 +1,4 @@
-package com.example.habitmanagementapplication;
+package com.example.habitmanagementapplication.habit;
 
 public class Habit {
     private int id; // 습관 객체의 고유한 식별자

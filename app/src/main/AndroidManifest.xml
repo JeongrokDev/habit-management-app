@@ -13,7 +13,7 @@
         android:theme="@style/Theme.HabitManagementApplication"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,8 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DiaryActivity"/>
-        <activity android:name=".ProgressActivity"/>
+        <activity android:name=".activity.DiaryActivity"/>
+        <activity android:name=".activity.ProgressActivity"/>
     </application>
 
 </manifest>
