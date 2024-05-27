@@ -17,6 +17,7 @@ import com.example.habitmanagementapplication.activity.DiaryActivity;
 import com.example.habitmanagementapplication.habit.Habit;
 import com.example.habitmanagementapplication.habit.HabitAdapter;
 import com.example.habitmanagementapplication.habit.HabitDatabaseHelper;
+import com.example.habitmanagementapplication.progress.ProgressAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +32,12 @@ public class ProgressActivity extends AppCompatActivity {
     // 목표 습관 데이터베이스 관련
     HabitDatabaseHelper dbHelper;
 
-    // 목표 습관을 표시할 레이아웃 관련
-    private LinearLayout habitLayout;
+//    // 목표 습관을 표시할 레이아웃 관련
+//    private LinearLayout habitLayout;
+
+    // 진척도를 표시할 레이아웃 관련
+    private LinearLayout progressRateLayout;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +52,9 @@ public class ProgressActivity extends AppCompatActivity {
         backToProgressInProgressBtn = findViewById(R.id.backToProgressInProgressBtn);
         showAllDataInProgressBtn = findViewById(R.id.showAllDataInProgressBtn);
 
-        habitLayout = findViewById(R.id.layout_habit);
+//        habitLayout = findViewById(R.id.layout_habit);
+        progressRateLayout = findViewById(R.id.layout_progress);
+        ProgressAdapter.displayProgressRate(ProgressActivity.this, dbHelper, progressRateLayout);
 
         backToMainInProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +78,7 @@ public class ProgressActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "현황 화면으로 돌아가기(현황 화면에서)", Toast.LENGTH_SHORT).show();
+                ProgressAdapter.displayProgressRate(ProgressActivity.this, dbHelper, progressRateLayout);
             }
         });
 
@@ -79,7 +87,7 @@ public class ProgressActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "모든 정보 보기(현황 화면에서)", Toast.LENGTH_SHORT).show();
 
-                HabitAdapter.displayHabitsForDatabaseReview(ProgressActivity.this, dbHelper, habitLayout);
+                HabitAdapter.displayHabitsForDatabaseReview(ProgressActivity.this, dbHelper, progressRateLayout);
             }
         });
     }
