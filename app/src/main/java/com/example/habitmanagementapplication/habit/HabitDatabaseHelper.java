@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.habitmanagementapplication.habit.Habit;
+import com.example.habitmanagementapplication.time.TimeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,32 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return habitList; // 습관 객체 리스트 반환
+    }
+
+    public List<Habit> getTodayCompletedhabitList() {
+        List<Habit> habitList = getAllHabits();
+        List<Habit> completedhabitList = new ArrayList<>();
+
+        for (Habit habit : habitList) {
+            if (habit.getDailyGoals()[TimeInfo.getCurrentDayOfWeek()]) {
+                if (habit.getDailyAchievements()[TimeInfo.getCurrentDayOfWeek()]) { completedhabitList.add(habit); }
+            }
+        }
+
+        return completedhabitList;
+    }
+
+    public List<Habit> getTodayInCompletedhabitList() {
+        List<Habit> habitList = getAllHabits();
+        List<Habit> inCompletedhabitList = new ArrayList<>();
+
+        for (Habit habit : habitList) {
+            if (habit.getDailyGoals()[TimeInfo.getCurrentDayOfWeek()]) {
+                if (!habit.getDailyAchievements()[TimeInfo.getCurrentDayOfWeek()]) { inCompletedhabitList.add(habit); }
+            }
+        }
+
+        return inCompletedhabitList;
     }
 
     public HabitDatabaseHelper(Context context) {

@@ -18,6 +18,7 @@ import com.example.habitmanagementapplication.R;
 import com.example.habitmanagementapplication.diary.Diary;
 import com.example.habitmanagementapplication.diary.DiaryAdapter;
 import com.example.habitmanagementapplication.diary.DiaryDatabaseHelper;
+import com.example.habitmanagementapplication.habit.HabitDatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +33,10 @@ public class DiaryActivity extends AppCompatActivity {
     Button addInDiaryBtn;
 
     // 습관 일기 데이터베이스 관련
-    DiaryDatabaseHelper dbHelper;
+    HabitDatabaseHelper dbHabitHelper;
+
+    // 습관 일기 데이터베이스 관련
+    DiaryDatabaseHelper dbDiaryHelper;
 
     // 습관 일기를 표시할 레이아웃 관련
     private LinearLayout diaryLayout;
@@ -42,8 +46,9 @@ public class DiaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
 
-        // DiaryDatabaseHelper 초기화
-        dbHelper = new DiaryDatabaseHelper(this);
+        // DatabaseHelper 초기화
+        dbDiaryHelper = new DiaryDatabaseHelper(this);
+        dbHabitHelper = new HabitDatabaseHelper(this);
 
         backToMainInDiaryBtn = findViewById(R.id.backToMainInDiaryBtn);
         backToDiaryInDiaryBtn = findViewById(R.id.backToDiaryInDiaryBtn);
@@ -51,7 +56,7 @@ public class DiaryActivity extends AppCompatActivity {
         addInDiaryBtn = findViewById(R.id.addInDiaryBtn);
 
         diaryLayout = findViewById(R.id.layout_diary);
-        DiaryAdapter.displayDiarys(DiaryActivity.this, dbHelper, diaryLayout);
+        DiaryAdapter.displayDiarys(DiaryActivity.this, dbHabitHelper, dbDiaryHelper, diaryLayout);
 
         backToMainInDiaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +87,7 @@ public class DiaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "추가하기(일기 화면에서)", Toast.LENGTH_SHORT).show();
-                DiaryAdapter.showAddDiaryDialog(DiaryActivity.this, dbHelper, diaryLayout);
+                DiaryAdapter.showAddDiaryDialog(DiaryActivity.this, dbHabitHelper, dbDiaryHelper, diaryLayout);
             }
         });
     }

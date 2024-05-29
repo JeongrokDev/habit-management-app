@@ -32,7 +32,7 @@ public class ProgressAdapter {
         cardView.setLayoutParams(layoutParams);
 
         TextView progressRateTextView = new TextView(context);
-        progressRateTextView.setText("progressRate: " + printPRate(pRate));
+        progressRateTextView.setText("progressRate\n" + printPRate(pRate));
 
         LinearLayout cardContentLayout = new LinearLayout(context);
         cardContentLayout.setOrientation(LinearLayout.VERTICAL);
@@ -44,8 +44,9 @@ public class ProgressAdapter {
 
     public static String printPRate(double[] pRates) {
         String result = "";
-        for (double pRate : pRates) {
-            result += pRate + " ";
+
+        for (int i = 0; i < pRates.length; i++) {
+            result += "[" + i + "]: " + pRates[i] + "\n";
         }
 
         return result;

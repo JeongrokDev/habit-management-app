@@ -75,6 +75,14 @@ public class DiaryDatabaseHelper extends SQLiteOpenHelper {
         db.close(); // 데이터베이스 닫기
     }
 
+    // 습관 일기 데이터를 삭제하는 메서드
+    public void deleteDiary(Diary diary) {
+        SQLiteDatabase db = this.getWritableDatabase(); // 데이터베이스를 쓰기 모드로 열기
+        // 특정 id를 가진 행을 삭제
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{String.valueOf(diary.getId())});
+        db.close(); // 데이터베이스 닫기
+    }
+
     // 일기 데이터를 데이터베이스에서 불러오는 메서드
     public Diary getDiary(int id) {
         SQLiteDatabase db = this.getReadableDatabase(); // 데이터베이스를 읽기 모드로 열기
