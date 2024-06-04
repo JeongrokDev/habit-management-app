@@ -59,7 +59,6 @@ public class ProgressActivity extends AppCompatActivity {
         backToMainInProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "메인 화면으로 돌아가기(현황 화면에서)", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -67,7 +66,6 @@ public class ProgressActivity extends AppCompatActivity {
         backToDiaryInProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "일기 화면으로 돌아가기(현황 화면에서)", Toast.LENGTH_SHORT).show();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 startActivity(intent);
@@ -77,7 +75,6 @@ public class ProgressActivity extends AppCompatActivity {
         backToProgressInProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "현황 화면으로 돌아가기(현황 화면에서)", Toast.LENGTH_SHORT).show();
                 ProgressAdapter.displayProgressRate(ProgressActivity.this, dbHelper, progressRateLayout);
             }
         });
@@ -85,8 +82,6 @@ public class ProgressActivity extends AppCompatActivity {
         showAllDataInProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "모든 정보 보기(현황 화면에서)", Toast.LENGTH_SHORT).show();
-
                 HabitAdapter.displayHabitsForDatabaseReview(ProgressActivity.this, dbHelper, progressRateLayout);
             }
         });

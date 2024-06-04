@@ -155,6 +155,19 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         return habitList; // 습관 객체 리스트 반환
     }
 
+    public List<Habit> getTodayHabitList() {
+        List<Habit> habitList = getAllHabits();
+        List<Habit> todayHabitList = new ArrayList<>();
+
+        for (Habit habit : habitList) {
+            if (habit.getDailyGoals()[TimeInfo.getCurrentDayOfWeek()]) {
+                todayHabitList.add(habit);
+            }
+        }
+
+        return todayHabitList;
+    }
+
     public List<Habit> getTodayCompletedhabitList() {
         List<Habit> habitList = getAllHabits();
         List<Habit> completedhabitList = new ArrayList<>();

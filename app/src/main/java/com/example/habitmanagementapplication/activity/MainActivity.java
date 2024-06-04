@@ -1,29 +1,31 @@
 package com.example.habitmanagementapplication.activity;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.habitmanagementapplication.R;
-import com.example.habitmanagementapplication.habit.Habit;
 import com.example.habitmanagementapplication.habit.HabitAdapter;
 import com.example.habitmanagementapplication.habit.HabitDatabaseHelper;
+import com.example.habitmanagementapplication.notification.AlarmReceiver;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     // 상단에 위치한 4개의 버튼 관련
@@ -40,10 +42,24 @@ public class MainActivity extends AppCompatActivity {
 
     HabitAdapter habitAdapter;
 
+    private static final int PERMISSION_REQUEST_CODE = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
+            } else {
+                setDailyAlarm();
+            }
+        } else {
+            setDailyAlarm();
+        }
 
         // HabitDatabaseHelper 초기화
         dbHelper = new HabitDatabaseHelper(this);
@@ -59,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         backToMainInMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "메인 화면으로 돌아가기(메인 화면에서)", Toast.LENGTH_SHORT).show();
                 HabitAdapter.displayHabits(MainActivity.this, dbHelper, habitLayout);
             }
         });
@@ -67,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         backToDiaryInMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "일기 화면으로 돌아가기(메인 화면에서)", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 startActivity(intent);
             }
@@ -76,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         backToProgressInMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "현황 화면으로 돌아가기(메인 화면에서)", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), ProgressActivity.class);
                 startActivity(intent);
             }
@@ -85,9 +98,53 @@ public class MainActivity extends AppCompatActivity {
         addInMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "추가하기(메인 화면에서)", Toast.LENGTH_SHORT).show();
                 HabitAdapter.showAddHabitDialog(MainActivity.this, dbHelper, habitLayout);
             }
         });
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("AlarmReceiver", "createNotificationChannel()");
+            CharSequence name = "DailyReminderChannel";
+            String description = "Channel for Daily Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyDaily", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void setDailyAlarm() {
+        Log.d("AlarmReceiver", "setDailyAlarm()");
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        // 매일 알람 설정
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        // 디버깅을 위한 로그 출력
+        Log.d("AlarmReceiver", "Alarm set for 09:00 every day");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setDailyAlarm();
+            } else {
+                Log.d("AlarmReceiver", "Notification permission denied");
+            }
+        }
     }
 }

@@ -61,7 +61,6 @@ public class DiaryActivity extends AppCompatActivity {
         backToMainInDiaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "메인 화면으로 돌아가기(일기 화면에서)", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -69,14 +68,12 @@ public class DiaryActivity extends AppCompatActivity {
         backToDiaryInDiaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "일기 화면으로 돌아가기(일기 화면에서)", Toast.LENGTH_SHORT).show();
             }
         });
 
         backToProgressInDiaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "현황 화면으로 돌아가기(일기 화면에서)", Toast.LENGTH_SHORT).show();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), ProgressActivity.class);
                 startActivity(intent);
@@ -86,7 +83,6 @@ public class DiaryActivity extends AppCompatActivity {
         addInDiaryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "추가하기(일기 화면에서)", Toast.LENGTH_SHORT).show();
                 DiaryAdapter.showAddDiaryDialog(DiaryActivity.this, dbHabitHelper, dbDiaryHelper, diaryLayout);
             }
         });

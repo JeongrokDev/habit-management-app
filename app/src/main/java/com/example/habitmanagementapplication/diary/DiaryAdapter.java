@@ -1,29 +1,45 @@
 package com.example.habitmanagementapplication.diary;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 
 import com.example.habitmanagementapplication.R;
-import com.example.habitmanagementapplication.activity.DiaryActivity;
 //import com.example.habitmanagementapplication.feedback.ChatGptManager;
+import com.example.habitmanagementapplication.feedback.ApiClient;
+import com.example.habitmanagementapplication.feedback.ChatRequest;
+import com.example.habitmanagementapplication.feedback.ChatResponse;
+import com.example.habitmanagementapplication.feedback.OpenAIApi;
 import com.example.habitmanagementapplication.habit.Habit;
 import com.example.habitmanagementapplication.habit.HabitDatabaseHelper;
 import com.example.habitmanagementapplication.time.TimeInfo;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Handler;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DiaryAdapter {
+    private static final int MAX_RETRY_COUNT = 3;
+
     // 일기 정보를 입력받기 위한 대화상자
     public static void showAddDiaryDialog(Context context, HabitDatabaseHelper dbHabitHelper, DiaryDatabaseHelper dbDiaryHelper, LinearLayout diaryLayout) {
         View dialogView = (View) View.inflate(context, R.layout.dialog_diary, null);
@@ -139,35 +155,14 @@ public class DiaryAdapter {
             }
         });
 
-//        // 완료 및 미완료 습관 표시 설정 관련
-//        List<Habit> habitList = dbHabitHelper.getAllHabits();
-//        List<Habit> completedhabitList = new ArrayList<>();
-//        List<Habit> inCompletedhabitList = new ArrayList<>();
-//
-//        for (Habit habit : habitList) {
-//
-//            // 현재 요일에서 완료 및 미완료 습관 객체 가져와서 대화상자에 표시
-//            if (habit.getDailyGoals()[TimeInfo.getCurrentDayOfWeek()]) {
-//                if (habit.getDailyAchievements()[TimeInfo.getCurrentDayOfWeek()]) {
-//                    completedhabitList.add(habit);
-//                } else {
-//                    inCompletedhabitList.add(habit);
-//                }
-//            }
-//        }
-
-        // 만약 해당 요일에 이미 달성 여부가 true이면 버튼을 비활성화
+        // 피드백 버튼 클릭 이벤트 처리
         if (diary.getFeedbackReceived() == true) {
             feedbackButton.setEnabled(false);
         } else {
             feedbackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    diary.setFeedbackReceived(true);
-                    diary.setFeedbackContent(diary.getDiaryContent() + ": temp feedback");
-                    // 데이터베이스에서 습관 정보 업데이트
-                    dbDiaryHelper.updateDiary(diary);
-                    displayDiarys(context, dbHabitHelper, dbDiaryHelper, diaryLayout);
+                    requestFeedback(context, dbHabitHelper, dbDiaryHelper, diaryLayout, diary);
                 }
             });
         }
@@ -185,5 +180,59 @@ public class DiaryAdapter {
         cardView.addView(cardContentLayout);
 
         return cardView;
+    }
+
+    private static void requestFeedback(Context context, HabitDatabaseHelper dbHabitHelper, DiaryDatabaseHelper dbDiaryHelper, LinearLayout diaryLayout, Diary diary) {
+        Retrofit retrofit = ApiClient.getClient();
+        OpenAIApi apiService = retrofit.create(OpenAIApi.class);
+
+        String savedMessage = "";
+        List<Habit> completedhabitList = dbHabitHelper.getTodayCompletedhabitList();
+        List<Habit> inCompletedhabitList = dbHabitHelper.getTodayInCompletedhabitList();
+        savedMessage += "오늘 완료한 습관이 ";
+        for (Habit habit : completedhabitList) {
+            savedMessage += habit.getTitle() + ", ";
+        }
+
+        savedMessage += "이고 미완료한 습관이 ";
+        for (Habit habit : inCompletedhabitList) {
+            savedMessage += habit.getTitle() + ", ";
+        }
+
+        savedMessage += ("사용자가 작성한 습관 일기의 내용이 " + diary.getDiaryContent());
+        savedMessage += "일 때 사용자를 격려할 수 있는 한 줄의 피드백을 작성해줘.";
+
+        ChatRequest.Message message = new ChatRequest.Message("user", savedMessage);
+        ChatRequest request = new ChatRequest("gpt-3.5-turbo", Collections.singletonList(message));
+
+        Call<ChatResponse> call = apiService.getChatResponse(request);
+        call.enqueue(new Callback<ChatResponse>() {
+            @Override
+            public void onResponse(Call<ChatResponse> call, Response<ChatResponse> response) {
+                if (response.isSuccessful()) {
+                    ChatResponse chatResponse = response.body();
+                    if (chatResponse != null && !chatResponse.getChoices().isEmpty()) {
+                        String feedback = chatResponse.getChoices().get(0).getMessage().getContent();
+                        diary.setFeedbackContent(feedback);
+                        diary.setFeedbackReceived(true);
+                        dbDiaryHelper.updateDiary(diary);
+
+                        // UI 업데이트는 메인 스레드에서 수행
+                        ((Activity) context).runOnUiThread(() -> {
+                            displayDiarys(context, dbHabitHelper, dbDiaryHelper, diaryLayout);
+                        });
+                    }
+                } else {
+                    Log.e("DiaryAdapter", "API call failed with response code: " + response.code());
+                    Toast.makeText(context, "API 호출 실패: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChatResponse> call, Throwable t) {
+                Log.e("DiaryAdapter", "API call failed", t);
+                Toast.makeText(context, "API 호출 실패: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
