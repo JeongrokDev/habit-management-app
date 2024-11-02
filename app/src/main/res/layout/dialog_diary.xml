@@ -1,42 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textViewCompletedhabitList"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:paddingTop="15dp"
-        android:hint="완료한 습관"
-        android:inputType="textMultiLine"
-        android:gravity="top"/>
-
-    <TextView
-        android:id="@+id/textViewInCompletedhabitList"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:paddingTop="15dp"
-        android:hint="미완료한 습관"
-        android:inputType="textMultiLine"
-        android:gravity="top"/>
-
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- 메인 콘텐츠 레이아웃 -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:text="습관 일기 내용"/>
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:layout_gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/editDiaryContent"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:hint="습관 일기 내용을 입력하세요"
-        android:inputType="textMultiLine"
-        android:gravity="top"
-        android:lines="5"
-        android:scrollbars="vertical"/>
+        <!-- 완료한 습관 -->
+        <TextView
+            android:id="@+id/textViewCompletedHabitList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="완료한 습관"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/completedHabitList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#EEEEEE"
+            android:textColor="#333333"
+            android:padding="12dp"
+            android:background="#FAFAFA"
+            android:textSize="16sp"
+            android:gravity="top"/>
+
+        <!-- 미완료한 습관 -->
+        <TextView
+            android:id="@+id/textViewInCompletedHabitList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="미완료한 습관"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
+
+        <TextView
+            android:id="@+id/inCompletedHabitList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#EEEEEE"
+            android:textColor="#333333"
+            android:padding="12dp"
+            android:background="#FAFAFA"
+            android:textSize="16sp"
+            android:gravity="top"/>
+
+        <!-- 습관 일기 내용 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="습관 일기 내용"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
+
+        <EditText
+            android:id="@+id/editDiaryContent"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="습관 일기 내용을 입력하세요"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:padding="12dp"
+            android:backgroundTint="#DDDDDD"
+            android:background="#FAFAFA"
+            android:textColor="#333333"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</FrameLayout>

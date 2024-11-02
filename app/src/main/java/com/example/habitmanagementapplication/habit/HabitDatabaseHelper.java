@@ -10,6 +10,8 @@ import com.example.habitmanagementapplication.habit.Habit;
 import com.example.habitmanagementapplication.time.TimeInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HabitDatabaseHelper extends SQLiteOpenHelper {
@@ -152,7 +154,20 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        return habitList; // 습관 객체 리스트 반환
+
+        // 시간 기준으로 정렬
+        Collections.sort(habitList, new Comparator<Habit>() {
+            @Override
+            public int compare(Habit h1, Habit h2) {
+                int hourComparison = Integer.compare(Integer.parseInt(h1.getHour()), Integer.parseInt(h2.getHour()));
+                if (hourComparison == 0) {
+                    return Integer.compare(Integer.parseInt(h1.getMinute()), Integer.parseInt(h2.getMinute()));
+                }
+                return hourComparison;
+            }
+        });
+
+        return habitList; // 정렬된 습관 객체 리스트 반환
     }
 
     public List<Habit> getTodayHabitList() {
@@ -196,5 +211,63 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
 
     public HabitDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    // 특정 습관의 누적 달성 횟수를 불러오는 함수
+    public int getHabitAchievementCount(int habitId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COLUMN_DAILY_ACHIEVEMENTS + " FROM " + TABLE_NAME +
+                " WHERE " + COLUMN_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(habitId)});
+
+        int achievementCount = 0;
+        if (cursor.moveToFirst()) {
+            String dailyAchievements = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DAILY_ACHIEVEMENTS));
+            // 문자열에서 '1'의 개수를 세서 누적 달성 횟수로 반환
+            for (char c : dailyAchievements.toCharArray()) {
+                if (c == '1') {
+                    achievementCount++;
+                }
+            }
+        }
+        cursor.close();
+        return achievementCount;
+    }
+
+    public void insertDummyHabits() {
+        // 더미 습관 데이터 생성
+        insertHabit(new Habit(
+                0,
+                "아침 운동",
+                "06", "30",
+                new boolean[]{false, true, false, true, false, true, false},
+                new boolean[]{false, true, false, false, false, false, false}
+        ));
+        insertHabit(new Habit(
+                0,
+                "영어 회화 연습",
+                "15", "00",
+                new boolean[]{false, true, true, true, true, true, false},
+                new boolean[]{false, true, false, true, true, false, false}
+        ));
+        insertHabit(new Habit(
+                0,
+                "배운 내용 복습",
+                "20", "15",
+                new boolean[]{true, true, true, true, true, true, true},
+                new boolean[]{true, false, false, true, true, false, false}
+        ));
+//        insertHabit(new Habit(0,
+//                "일기 작성",
+//                "09", "30",
+//                new boolean[]{false, true, false, true, false, true, false},
+//                new boolean[]{false, true, false, true, false, true, false}
+//        ));
+//        insertHabit(new Habit(0,
+//                "식단 관리",
+//                "10", "30",
+//                new boolean[]{false, true, false, true, false, true, false},
+//                new boolean[]{false, true, false, true, false, false, false}
+//        ));
     }
 }

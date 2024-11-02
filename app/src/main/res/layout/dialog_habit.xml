@@ -1,86 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:text="습관 제목"/>
+    <!-- 전체 콘텐츠 레이아웃 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/selectedTitle"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:hint="습관 제목을 입력하세요"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:text="수행 시각"/>
-
-    <TimePicker
-        android:id="@+id/selectedTime"
-        android:timePickerMode="spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:text="수행 요일"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/checkBoxMonday"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="월"/>
+            android:gravity="center_horizontal">
 
-        <CheckBox
-            android:id="@+id/checkBoxTuesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="화"/>
+            <!-- 상단 입력 카드 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="4dp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#EEEEEE">
 
-        <CheckBox
-            android:id="@+id/checkBoxWednesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="수"/>
+                <!-- 습관 제목 입력 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="습관 제목"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/checkBoxThursday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="목"/>
+                <EditText
+                    android:id="@+id/selectedTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="예: 독서 30분하기"
+                    android:padding="12dp"
+                    android:backgroundTint="#DDDDDD"
+                    android:textColor="#333333"
+                    android:layout_marginTop="8dp" />
 
-        <CheckBox
-            android:id="@+id/checkBoxFriday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="금"/>
+                <!-- 수행 시각 선택 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수행 시각"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp" />
 
-        <CheckBox
-            android:id="@+id/checkBoxSaturday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="토"/>
+                <TimePicker
+                    android:id="@+id/selectedTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    android:layout_marginTop="8dp"/>
 
-        <CheckBox
-            android:id="@+id/checkBoxSunday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="일"/>
-    </LinearLayout>
+                <!-- 수행 요일 선택 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수행 요일"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp" />
 
-</LinearLayout>
+                <!-- 요일 체크박스 그룹 (GridLayout 활용) -->
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:columnCount="5"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <!-- 월요일부터 금요일 -->
+                    <CheckBox
+                        android:id="@+id/checkBoxMonday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="월"
+                        android:buttonTint="#4CAF50" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxTuesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="화"
+                        android:buttonTint="#4CAF50" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxWednesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="수"
+                        android:buttonTint="#4CAF50" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxThursday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="목"
+                        android:buttonTint="#4CAF50" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxFriday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="금"
+                        android:buttonTint="#4CAF50" />
+
+                    <!-- 토요일과 일요일 (하단에 색상 강조) -->
+                    <CheckBox
+                        android:id="@+id/checkBoxSaturday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="토"
+                        android:buttonTint="#FF9800"
+                        android:layout_gravity="center_horizontal" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxSunday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="일"
+                        android:buttonTint="#FF9800"
+                        android:layout_gravity="center_horizontal" />
+                </GridLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

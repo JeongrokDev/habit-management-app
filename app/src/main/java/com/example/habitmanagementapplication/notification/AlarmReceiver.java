@@ -33,6 +33,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 todayNoti.append(habit.getTitle()).append(", ");
             }
 
+            // 마지막에 ", "가 있으면 제거
+            if (todayNoti.length() > 2 && todayNoti.toString().endsWith(", ")) {
+                todayNoti.setLength(todayNoti.length() - 2); // 마지막 두 문자 제거
+            }
+
             // 알림 내용이 너무 길 경우 줄이기
             String notificationText = todayNoti.toString();
             if (notificationText.length() > 50) {
