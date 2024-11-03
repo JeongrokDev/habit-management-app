@@ -239,15 +239,15 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
         insertHabit(new Habit(
                 0,
                 "아침 운동",
-                "06", "30",
-                new boolean[]{false, true, false, true, false, true, false},
-                new boolean[]{false, true, false, false, false, false, false}
+                "09", "40",
+                new boolean[]{false, true, false, true, false, true, true},
+                new boolean[]{false, true, false, false, false, true, false}
         ));
         insertHabit(new Habit(
                 0,
                 "영어 회화 연습",
-                "15", "00",
-                new boolean[]{false, true, true, true, true, true, false},
+                "15", "30",
+                new boolean[]{false, true, true, true, true, true, true},
                 new boolean[]{false, true, false, true, true, false, false}
         ));
         insertHabit(new Habit(
@@ -255,13 +255,13 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
                 "배운 내용 복습",
                 "20", "15",
                 new boolean[]{true, true, true, true, true, true, true},
-                new boolean[]{true, false, false, true, true, false, false}
+                new boolean[]{true, false, false, true, true, true, false}
         ));
 //        insertHabit(new Habit(0,
-//                "일기 작성",
-//                "09", "30",
-//                new boolean[]{false, true, false, true, false, true, false},
-//                new boolean[]{false, true, false, true, false, true, false}
+//                "테스트",
+//                "01", "30",
+//                new boolean[]{false, true, false, true, false, true, true},
+//                new boolean[]{false, true, false, false, false, false, false}
 //        ));
 //        insertHabit(new Habit(0,
 //                "식단 관리",

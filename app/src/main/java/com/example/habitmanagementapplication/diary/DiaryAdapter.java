@@ -229,10 +229,17 @@ public class DiaryAdapter {
         habitStatusLabel.setTypeface(null, android.graphics.Typeface.BOLD);
         habitStatusLabel.setPadding(0, 16, 0, 8);
 
-        LinearLayout habitStatusLayout = new LinearLayout(context);
-        habitStatusLayout.setOrientation(LinearLayout.HORIZONTAL);
-        habitStatusLayout.setPadding(0, 8, 0, 8);
-        habitStatusLayout.setLayoutParams(new LinearLayout.LayoutParams(
+        LinearLayout habitStatusLayout1 = new LinearLayout(context);
+        habitStatusLayout1.setOrientation(LinearLayout.HORIZONTAL);
+        habitStatusLayout1.setPadding(0, 8, 0, 8);
+        habitStatusLayout1.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        LinearLayout habitStatusLayout2 = new LinearLayout(context);
+        habitStatusLayout2.setOrientation(LinearLayout.HORIZONTAL);
+        habitStatusLayout2.setPadding(0, 8, 0, 8);
+        habitStatusLayout2.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
         ));
 
@@ -255,7 +262,7 @@ public class DiaryAdapter {
                 }});
                 habitStatusText.setTextColor(0xFF2E7D32); // 짙은 초록색 텍스트
                 habitStatusText.setGravity(android.view.Gravity.CENTER);
-                habitStatusLayout.addView(habitStatusText);
+                habitStatusLayout1.addView(habitStatusText);
             }
         }
 
@@ -272,7 +279,7 @@ public class DiaryAdapter {
                 }});
                 habitStatusText.setTextColor(0xFFC62828); // 짙은 빨간색 텍스트
                 habitStatusText.setGravity(android.view.Gravity.CENTER);
-                habitStatusLayout.addView(habitStatusText);
+                habitStatusLayout2.addView(habitStatusText);
             }
         }
 
@@ -334,7 +341,8 @@ public class DiaryAdapter {
         cardContentLayout.addView(diaryContentLabel);   // 일기 내용 레이블
         cardContentLayout.addView(diaryContentText);    // 일기 내용
         cardContentLayout.addView(habitStatusLabel);    // 습관 달성 현황 레이블
-        cardContentLayout.addView(habitStatusLayout);   // 습관 달성 현황 (가로 배치)
+        cardContentLayout.addView(habitStatusLayout1);   // 습관 달성 현황 (가로 배치)
+        cardContentLayout.addView(habitStatusLayout2);   // 습관 달성 현황 (가로 배치)
         cardContentLayout.addView(feedbackLabel);       // 피드백 레이블
         cardContentLayout.addView(feedbackText);        // 피드백 내용
         cardContentLayout.addView(feedbackButton);      // 피드백 버튼
@@ -384,9 +392,19 @@ public class DiaryAdapter {
         }
 
         savedMessage += (" 오늘 사용자가 작성한 일기는 다음과 같습니다: \"" + diary.getDiaryContent() + "\".\n\n");
-        savedMessage += "이 정보를 바탕으로, 사용자가 불안감을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안해 주세요. ";
-        savedMessage += "예를 들어, 쇼핑, 야외 산책, 혹은 새로운 환경에서 간단한 활동을 시도하는 등 구체적이고 실질적인 조언을 부탁드립니다. ";
-        savedMessage += "특히 사용자가 예상하지 못한 방식으로 불안을 줄일 수 있는 창의적인 활동을 추천해 주세요. 한 문단 이내, 3줄 이하로 작성해 주시고 존댓말로 부탁드립니다.";
+//        savedMessage += "이 정보를 바탕으로, 사용자가 불안감을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안해 주세요. ";
+//        savedMessage += "예를 들어, 쇼핑, 야외 산책, 혹은 새로운 환경에서 간단한 활동을 시도하는 등 구체적이고 실질적인 조언을 부탁드립니다. ";
+//        savedMessage += "특히 사용자가 예상하지 못한 방식으로 불안을 줄일 수 있는 창의적인 활동을 추천해 주세요. 한 문단 이내, 3줄 이하로 작성해 주시고 존댓말로 부탁드립니다.";
+        // 일관된 양식 요청
+//        savedMessage += "이 정보를 바탕으로 다음과 같은 형식으로 피드백을 작성해 주세요.\n";
+//        savedMessage += "1. 피드백 요약: 사용자의 오늘 성취도와 일기 내용을 바탕으로 한 간단한 요약\n";
+//        savedMessage += "2. 추천 활동: 사용자가 어려움을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안\n";
+//        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주세요. 존댓말을 사용해 주세요.";
+
+        savedMessage += "이 정보를 바탕으로 다음과 같은 형식으로 피드백을 작성해 주세요.\n";
+        savedMessage += "1. 격려의 메시지: 오늘의 성취와 일기 내용을 바탕으로 격려 및 응원\n";
+        savedMessage += "2. 추천 활동: 사용자가 어려움을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안\n";
+        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주시고, 존댓말로 부탁드립니다.";
 
         ChatRequest.Message message = new ChatRequest.Message("user", savedMessage);
         ChatRequest request = new ChatRequest("gpt-3.5-turbo", Collections.singletonList(message));
@@ -451,7 +469,12 @@ public class DiaryAdapter {
             }
             savedMessage.append("\n");
         }
-        savedMessage.append("위 내용을 종합하여, 사용자가 더 나은 습관 형성을 지속할 수 있도록 격려와 개선 팁을 포함한 피드백을 작성해 주세요. 특히, 미완료한 습관을 꾸준히 수행할 수 있도록 간단한 실천 방법이나 유용한 제안을 포함해 주세요.");
+//        savedMessage.append("위 내용을 종합하여, 사용자가 더 나은 습관 형성을 지속할 수 있도록 격려와 개선 팁을 포함한 피드백을 작성해 주세요. 특히, 미완료한 습관을 꾸준히 수행할 수 있도록 간단한 실천 방법이나 유용한 제안을 포함해 주세요.");
+        // 일관된 양식으로 종합 피드백 작성 요청
+        savedMessage.append("위 데이터를 기반으로, 다음과 같은 형식으로 종합 피드백을 작성해 주세요.\n\n");
+        savedMessage.append("1. 장기적인 성과 분석: 사용자가 지금까지 기록한 일기와 습관 달성 내용을 바탕으로 주요 성과와 반복되는 실천 패턴을 요약해 주세요.\n");
+        savedMessage.append("2. 개선 방향성 제안: 지속적인 습관 형성과 목표 달성을 위한 실천 방안과 장기적인 개선 팁을 제공해 주세요.\n\n");
+        savedMessage.append("각 항목은 한 문단 이내로 간결하게 작성해 주시고, 존댓말로 부탁드립니다.");
         return savedMessage.toString();
     }
 
@@ -463,8 +486,11 @@ public class DiaryAdapter {
             savedMessage.append("일기 작성일: ").append(diary.getCreatedDate()).append("\n");
             savedMessage.append("일기 내용: ").append(diary.getDiaryContent()).append("\n");
         }
-        savedMessage.append("위의 일기들에서 자주 등장하는 감정이나 심리적 상태를 나타내는 키워드를 추출하고, ");
-        savedMessage.append("이를 바탕으로 사용자의 최근 감정 상태나 심리적 경향을 요약하여 설명해 주세요.");
+        // 일관된 양식 요청
+        savedMessage.append("\n위의 일기들을 종합하여, 다음과 같은 형식으로 분석 결과를 작성해 주세요:\n\n");
+        savedMessage.append("1. 주요 키워드: 사용자의 감정 및 심리 상태를 반영하는 주요 키워드 목록 (최대 5개)\n");
+        savedMessage.append("2. 감정 상태 요약: 일기들에서 나타난 감정적 경향을 바탕으로 사용자의 최근 감정 상태나 심리적 경향을 한 문단 이내로 간결하게 요약\n\n");
+        savedMessage.append("각 항목은 간결하게 작성해 주시고, 존댓말을 사용해 주세요.");
 
         return savedMessage.toString();
     }

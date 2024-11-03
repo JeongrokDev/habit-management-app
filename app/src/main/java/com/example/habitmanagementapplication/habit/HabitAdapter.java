@@ -241,7 +241,9 @@ public class HabitAdapter {
                 setColor(0xFFE0E6EB); // 기본 회색 배경
             }});
 
-            if (dailyGoals[i]) { // 수행 요일이면 색상 변경
+            if (dailyGoals[i]) {
+                // 수행해야 하는 요일이면
+                
                 if (dailyAchievements[i]) {
                     // 수행해야 하는 요일인데 완료한 경우
                     ((android.graphics.drawable.GradientDrawable) dayTextView.getBackground())
@@ -249,12 +251,21 @@ public class HabitAdapter {
                     dayTextView.setTextColor(0xFFFFFFFF);
                     dayTextView.setText("✓");
                 } else {
-                    // 수행해야 하는 요일인데 미완료한 경우
-                    ((android.graphics.drawable.GradientDrawable) dayTextView.getBackground())
-                            .setColor(0xFFA5D6A7); // 파란색: 수행해야 하는 요일
-                    dayTextView.setTextColor(0xFFFFFFFF);
+                    if (i < currentDayOfWeek) {
+                        // 수행해야 하는 요일인데 미완료한 경우, 이미 지난 경우...
+                        ((android.graphics.drawable.GradientDrawable) dayTextView.getBackground())
+                                .setColor(0xFFEF5350);
+                        dayTextView.setTextColor(0xFFFFFFFF);
+                    } else {
+                        // 수행해야 하는 요일인데 미완료한 경우, 지나지 않은 경우
+                        ((android.graphics.drawable.GradientDrawable) dayTextView.getBackground())
+                                .setColor(0xFFA5D6A7);
+                        dayTextView.setTextColor(0xFFFFFFFF);
+                    }
                 }
+
             } else {
+                // 수행해야 하는 요일이 아니면
                 dayTextView.setTextColor(0xFF666666);
             }
 
