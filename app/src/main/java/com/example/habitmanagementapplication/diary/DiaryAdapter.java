@@ -401,10 +401,14 @@ public class DiaryAdapter {
 //        savedMessage += "2. 추천 활동: 사용자가 어려움을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안\n";
 //        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주세요. 존댓말을 사용해 주세요.";
 
-        savedMessage += "이 정보를 바탕으로 다음과 같은 형식으로 피드백을 작성해 주세요.\n";
-        savedMessage += "1. 격려의 메시지: 오늘의 성취와 일기 내용을 바탕으로 격려 및 응원\n";
-        savedMessage += "2. 추천 활동: 사용자가 어려움을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안\n";
-        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주시고, 존댓말로 부탁드립니다.";
+//        savedMessage += "이 정보를 바탕으로 다음과 같은 형식으로 피드백을 작성해 주세요.\n";
+//        savedMessage += "1. 격려의 메시지: 오늘의 성취와 일기 내용을 바탕으로 격려 및 응원\n";
+//        savedMessage += "2. 추천 활동: 사용자가 어려움을 완화할 수 있는 색다른 방법이나 일상에서 쉽게 실천할 수 있는 행동을 제안\n";
+//        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주시고, 존댓말로 부탁드립니다.";
+        savedMessage += "이 정보를 바탕으로 피드백을 작성해 주세요.\n";
+        savedMessage += "1. 격려의 메시지: 오늘의 성취와 일기 내용을 바탕으로, 사용자가 예상치 못한 방식으로 자부심을 느낄 수 있도록 유머와 비유를 섞어 격려해 주세요.\n";
+        savedMessage += "2. 추천 활동: 사용자가 생활에서 쉽게 실천할 수 있으면서도 색다르고 창의적인 행동을 제안해 주세요. 예를 들어, 종이접기로 평온함을 찾거나 일기를 향초를 켜고 작성하는 것처럼 독특한 방법을 추천해 주세요.\n";
+        savedMessage += "피드백은 한 문단 이내, 3줄 이하로 작성해 주시고, 재미와 신선함이 느껴질 수 있도록 부탁드립니다.";
 
         ChatRequest.Message message = new ChatRequest.Message("user", savedMessage);
         ChatRequest request = new ChatRequest("gpt-3.5-turbo", Collections.singletonList(message));
